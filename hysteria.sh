@@ -104,7 +104,7 @@ downloadHysteria() {
         exit 1
     fi
     yellow "Hysteria latest version detected：${last_version},start installation"
-    wget -N --no-check-certificate https://github.com/HyNetwork/Hysteria/releases/download/v${last_version}/Hysteria-tun-linux-$(archAffix) -O /usr/bin/hysteria
+    wget -N --no-check-certificate https://github.com/HyNetwork/Hysteria/releases/download/v${last_version}/Hysteria-linux-$(archAffix) -O /usr/bin/hysteria
     if [[ $? -ne 0 ]]; then
         red "Failed to download Hysteria, please make sure your server can connect and download Github files"
         exit 1

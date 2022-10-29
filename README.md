@@ -1,2 +1,2 @@
-# Hysteria-Install
-Hysteria-Install By AIko
+# Hysteria-install
+Hysteria-Install By Aiko

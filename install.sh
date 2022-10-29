@@ -1055,8 +1055,8 @@ aiko
 clear
 cat << EOF
  -------------------------------------------
-|**********      Hi Hysteria       **********|
-|**********    Author: emptysuns   **********|
+|**********      Hyseria install       **********|
+|**********    Author: AikoCute   **********|
 |**********     Version: `echoColor red "${aikoV}"`    **********|
  -------------------------------------------
 Tips:`echoColor green "aiko"`command to run the script again.

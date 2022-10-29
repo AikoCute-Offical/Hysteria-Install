@@ -1,5 +1,5 @@
 #!/bin/bash
-aikoV="0.4.2.a"
+aikoV="0.1"
 function echoColor() {
 	case $1 in
 	"red")
@@ -125,7 +125,7 @@ function printMsg(){
 
 function aiko(){
 	if [ ! -f "/usr/bin/aiko" ]; then
-  		wget -q -O /usr/bin/aiko --no-check-certificate https://raw.githubusercontent.com/AikoCute-Offical/Hysteria-install/master/install.sh
+  		wget -q -O /usr/bin/aiko --no-check-certificate https://raw.githubusercontent.com/AikoCute-Offical/Hysteria-Install/master/install.sh
 		chmod +x /usr/bin/aiko
 	fi	
 }
@@ -236,19 +236,19 @@ function setHysteriaConfig(){
 		do
 			if [ ! -f "${key}" ];then
 				echoColor red "\nThe path does not exist, please re-enter!"
-				echoColor green "请输入证书key文件路径:"
+				echoColor green "Please enter the path of the certificate key file:"
 				read  key
 			else
 				break
 			fi
 		done
-		echoColor green "请输入所选证书域名:"
+		echoColor green "Please enter the selected certificate domain name:"
 		read domain
 		while :
 		do
 			if [ -z "${domain}" ];then
-				echoColor red "\n此选项不能为空,请重新输入!"
-				echoColor green "请输入所选证书域名:"
+				echoColor red "\nThis option cannot be empty, please re-enter!"
+				echoColor green "Please enter the selected certificate domain name:"
 				read  domain
 			else
 				break
@@ -256,41 +256,41 @@ function setHysteriaConfig(){
 		done
 		useAcme=false
 		useLocalCert=true
-		echoColor purple "\n您已选择使用本地${domain}证书加密.\n"
+		echoColor purple "\nYou have chosen to use local${domain}Certificate encryption.\n"
     else 
-    	echoColor green "请输入域名(需正确解析到本机,关闭CDN):"
+    	echoColor green "Please enter the domain name (need to be correctly parsed to this machine and close the CDN):"
 		read domain
 		while :
 		do
 			if [ -z "${domain}" ];then
-				echoColor red "\n此选项不能为空,请重新输入!"
-				echoColor green "请输入域名(需正确解析到本机,关闭CDN):"
+				echoColor red "\nThis option cannot be empty, please re-enter!"
+				echoColor green "Please enter the domain name (need to be correctly parsed to this machine and close the CDN):"
 				read  domain
 			else
 				break
 			fi
 		done
 		useAcme=true
-		echoColor purple "\n您已选择使用ACME自动签发可信的${domain}证书加密.\n"
+		echoColor purple "\n you have chosen to use ACME to automatically issue credible${domain}Certificate encryption.\n"
     fi
 
 	while :
 	do
-		echoColor green "请输入你想要开启的端口,此端口是server端口,建议10000-65535.(默认随机)"
+		echoColor green "Please enter the port you want to open, this port is the server port, it is recommended to 10000-65535. (By default random)"
 		read  port
 		if [ -z "${port}" ];then
 			port=$(($(od -An -N2 -i /dev/random) % (65534 - 10001) + 10001))
-			echo -e "随机端口:"`echoColor red ${port}`"\n"
+			echo -e "Random port:"`echoColor red ${port}`"\n"
 		fi
 		pIDa=`lsof -i :${port}|grep -v "PID" | awk '{print $2}'`
 		if [ "$pIDa" != "" ];
 		then
-			echoColor red "端口${port}被占用,PID:${pIDa}!请重新输入或者运行kill -9 ${pIDa}后重新安装!"
+			echoColor red "port${port}Occupied, PID:${pIDa}!Please re -enter or run kill -9 ${pIDa}Re -installation!"
 		else
 			break
 		fi
 	done
-    echo -e "\033[32m选择协议类型:\n\n\033[0m\033[33m\033[01m1、udp(QUIC)\n2、faketcp\n3、wechat-video(回车默认)\033[0m\033[32m\n\n输入序号:\033[0m"
+    echo -e "\033[Select the protocol type:\n\n\033[0m\033[33m\033[01m1、udp(QUIC)\n2、faketcp\n3、wechat-video(Enter the default)\033[0m\033[32m\n\n Enter the serial number:\033[0m"
     read protocol
 	ut=
     if [ -z "${protocol}" ] || [ $protocol == "3" ];then
@@ -303,41 +303,41 @@ function setHysteriaConfig(){
     	protocol="udp"
 		ut="udp"
     fi
-    echo -e "传输协议:"`echoColor red ${protocol}`"\n"
+    echo -e "Transfer Protocol:"`echoColor red ${protocol}`"\n"
 
-    echoColor green "请输入您到此服务器的平均延迟,关系到转发速度(默认200,单位:ms):"
+    echoColor green "Please enter the average delay of your server to this server, which is related to the speed of forwarding (default 200, unit: MS)"
     read  delay
     if [ -z "${delay}" ];then
 	delay=200
     echo -e "delay:`echoColor red ${delay}`ms\n"
     fi
-    echo -e "\n期望速度,这是客户端的峰值速度,服务端默认不受限。"`echoColor red Tips:脚本会自动*1.10做冗余，您期望过低或者过高会影响转发效率,请如实填写!`
-    echoColor green "请输入客户端期望的下行速度:(默认50,单位:mbps):"
+    echo -e "\nExpected speed, this is the peak speed of the client, and the server is not limited by default. "`echoColor red Tips: The script will automatically*1.10 Redundancy, if your expectations are too low or too high, it will affect the forwarding efficiency, please fill in truthfully!`
+    echoColor green "Please enter the desired downlink speed of the client: (default 50, unit: mbps):"
     read  download
     if [ -z "${download}" ];then
         download=50
-    echo -e "客户端下行速度："`echoColor red ${download}`"mbps\n"
+    echo -e "Client downlink speed:"`echoColor red ${download}`"mbps\n"
     fi
-    echo -e "\033[32m请输入客户端期望的上行速度(默认10,单位:mbps):\033[0m" 
+    echo -e "\033[32mPlease enter the desired uplink speed of the client (default 10, unit: mbps):\033[0m" 
     read  upload
     if [ -z "${upload}" ];then
         upload=10
-    echo -e "客户端上行速度："`echoColor red ${upload}`"mbps\n"
+    echo -e "Client Uplink Speed："`echoColor red ${upload}`"mbps\n"
     fi
 	auth_str=""
-	echoColor green "请输入认证口令:"
+	echoColor green "Please enter the authentication password:"
 	read  auth_str
 	while :
 	do
 		if [ -z "${auth_str}" ];then
-			echoColor red "\n此选项不能省略,请重新输入!"
-			echoColor green "请输入认证口令:"
+			echoColor red "\nThis option cannot be omitted, please re-enter!"
+			echoColor green "Please enter the authentication password:"
 			read  auth_str
 		else
 			break
 		fi
 	done
-    echoColor green "\n配置录入完成!\n"
+    echoColor green "\nConfiguration entry completed!\n"
     echoColor yellowBlack "执行配置..."
     download=$(($download + $download / 10))
     upload=$(($upload + $upload / 10))
@@ -537,14 +537,14 @@ EOF
 	msg=`cat /tmp/aiko_debug.info`
 	case ${msg} in 
 		*"Failed to get a certificate with ACME"*)
-			echoColor red "域名:${u_host},申请证书失败!请查看服务器提供的面板防火墙是否开启(TCP:80,443)\n或者域名是否正确解析到此ip(不要开CDN!)\n如果无法满足以上两点,请重新安装使用自签证书."
+			echoColor red "domain name:${u_host},Failed to apply for certificate! Please check whether the panel firewall provided by the server is enabled(TCP:80,443)\nOr whether the domain name is correctly resolved to this ip (don't open a CDN!)\nIf the above two points cannot be met, please reinstall and use the self-signed certificate."
 			rm /etc/aiko/conf/aikoServer.json
 			rm /etc/aiko/result/aikoClient.json
 			rm /etc/systemd/system/aiko.service
 			exit
 			;;
 		*"bind: address already in use"*)
-			echoColor red "端口被占用,请更换端口!"
+			echoColor red "The port is occupied, please replace the port!"
 			exit
 			;;
 		*"Server up and running"*) 
@@ -555,8 +555,8 @@ EOF
 		*) 	
 			pIDa=`lsof -i :${port}|grep -v "PID" | awk '{print $2}'`
 			kill -9 ${pIDa} > /dev/null 2>&1
-			echoColor red "未知错误:请手动运行:`echoColor green "/etc/aiko/bin/appS -c /etc/aiko/conf/aikoServer.json server"`"
-			echoColor red "查看错误日志,反馈到issue!"
+			echoColor red "Unknown error: please run manually:`echoColor green "/etc/aiko/bin/appS -c /etc/aiko/conf/aikoServer.json server"`"
+			echoColor red "View the error log and report to the issue!"
 			exit
 			;;
 	esac
@@ -569,7 +569,7 @@ EOF
 		skip_cert_verify="false"
 	fi
 	generateMetaYaml "Hys-${u_host}" ${u_host} ${port} ${auth_str} ${protocol} ${upload} ${download} ${u_domain} ${skip_cert_verify} ${r_conn} ${r_client}
-	echoColor greenWhite "安装成功,请查看下方配置详细信息"
+	echoColor greenWhite "The installation is successful, please check the configuration details below"
 	sleep 10
 }
 
@@ -609,7 +609,7 @@ function updateHysteriaCore(){
 			echoColor green "Already the latest version.Ignore."
 		else
 			status=`systemctl is-active aiko`
-			if [ "${status}" = "active" ];then #如果是正常运行情况下将先停止守护进程再自动更新后重启，否则只负责更新
+			if [ "${status}" = "active" ];then 
 				systemctl stop aiko
 				downloadHysteriaCore
 				systemctl start aiko
@@ -626,7 +626,7 @@ function updateHysteriaCore(){
 
 function changeServerConfig(){
 	if [ ! -f "/etc/systemd/system/aiko.service" ]; then
-		echoColor red "请先安装hysteria,再去修改配置..."
+		echoColor red "Please install hysteria first, and then modify the configuration..."
 		exit
 	fi
 	systemctl stop aiko
@@ -635,7 +635,7 @@ function changeServerConfig(){
 	setHysteriaConfig
 	systemctl start aiko
 	printMsg
-	echoColor yellowBlack "重新配置完成."
+	echoColor yellowBlack "reconfiguration complete."
 	
 }
 
@@ -645,7 +645,7 @@ function aikoUpdate(){
 	if [ "${localV}" = "${remoteV}" ];then
 		echoColor green "Already the latest version.Ignore."
 	else
-		wget -q -O /usr/bin/aiko --no-check-certificate https://raw.githubusercontent.com/emptysuns/Hi_Hysteria/main/server/install.sh
+		wget -q -O /usr/bin/aiko --no-check-certificate https://raw.githubusercontent.com/AikoCute-Offical/Hysteria-Install/master/install.sh
 		chmod +x /usr/bin/aiko
 		echoColor green "Done."
 	fi
@@ -656,7 +656,7 @@ function aikoNotify(){
 	localV=${aikoV}
 	remoteV=`curl -fsSL https://git.io/hysteria.sh | sed  -n 2p | cut -d '"' -f 2`
 	if [ "${localV}" != "${remoteV}" ];then
-		echoColor purple "[Update] aiko有更新,version:v${remoteV},建议更新并查看日志: https://github.com/emptysuns/Hi_Hysteria"
+		echoColor purple "[Update] aiko有更新,version:v${remoteV},Recommended to update and check logs: https://github.com/emptysuns/Hi_Hysteria"
 	fi
 
 }
@@ -666,7 +666,7 @@ function hyCoreNotify(){
   		localV=`/etc/aiko/bin/appS -v | cut -d " " -f 3`
 		remoteV=`wget -qO- -t1 -T2 --no-check-certificate "https://api.github.com/repos/HyNetwork/hysteria/releases/latest" | grep "tag_name" | head -n 1 | awk -F ":" '{print $2}' | sed 's/\"//g;s/,//g;s/ //g'`
 		if [ "${localV}" != "${remoteV}" ];then
-			echoColor purple "[Update] hysteria有更新,version:${remoteV}. detail: https://github.com/HyNetwork/hysteria/blob/master/CHANGELOG.md"
+			echoColor purple "[Update] hysteria has an update,version:${remoteV}. detail: https://github.com/HyNetwork/hysteria/blob/master/CHANGELOG.md"
 		fi
 	fi
 }
@@ -675,16 +675,16 @@ function hyCoreNotify(){
 function checkStatus(){
 	status=`systemctl is-active aiko`
     if [ "${status}" = "active" ];then
-		echoColor green "hysteria正常运行"
+		echoColor green "hysteria is running normally"
 	else
-		echoColor red "Dead!hysteria未正常运行!"
+		echoColor red "Dead!hysteria is not functioning properly!"
 	fi
 }
 
 function install()
 {	
 	if [ -f "/etc/systemd/system/aiko.service" ]; then
-		echoColor green "你已经成功安装hysteria,如需修改配置请使用选项9/12"
+		echoColor green "You have successfully installed hysteria, if you need to modify the configuration please use option 9/12"
 		exit
 	fi
 	mkdir -p /etc/aiko/bin /etc/aiko/conf /etc/aiko/cert  /etc/aiko/result
@@ -723,7 +723,7 @@ EOF
 }
 
 
-# 输出ufw端口开放状态
+
 function checkUFWAllowPort() {
 	if ufw status | grep -q "$1"; then
 		echoColor purple "UFW OPEN: ${1}"
@@ -733,7 +733,7 @@ function checkUFWAllowPort() {
 	fi
 }
 
-# 输出firewall-cmd端口开放状态
+
 function checkFirewalldAllowPort() {
 	if firewall-cmd --list-ports --permanent | grep -q "$1"; then
 		echoColor purple "FIREWALLD OPEN: ${1}/${2}"
@@ -744,9 +744,6 @@ function checkFirewalldAllowPort() {
 }
 
 function allowPort() {
-	# 如果防火墙启动状态则添加相应的开放端口
-	# $1 tcp/udp
-	# $2 port
 	if systemctl status netfilter-persistent 2>/dev/null | grep -q "active (exited)"; then
 		local updateFirewalldStatus=
 		if ! iptables -L | grep -q "allow ${1}/${2}(aikosteria)"; then
@@ -776,7 +773,6 @@ function allowPort() {
 }
 
 function delaikoFirewallPort() {
-	# 如果防火墙启动状态则删除之前的规则
 	if systemctl status netfilter-persistent 2>/dev/null | grep -q "active (exited)"; then
 		local updateFirewalldStatus=
 		if iptables -L | grep -q "allow ${1}/${2}(aikosteria)"; then
@@ -828,29 +824,29 @@ function editProtocol(){
 
 function changeMode(){
 	if [ ! -f "/etc/aiko/conf/aikoServer.json" ]; then
-		echoColor red "配置文件不存在,exit..."
+		echoColor red "The configuration file does not exist, exit..."
 		exit
 	fi
 	protocol=`cat /etc/aiko/conf/aikoServer.json  | grep protocol | awk '{print $2}' | awk -F '"' '{ print $2}'`
-	echoColor yellow "当前使用协议为:"
+	echoColor yellow "The current usage protocol is:"
 	echoColor purple "${protocol}"
 	port=`cat /etc/aiko/conf/aikoServer.json | grep "listen" | awk '{print $2}' | tr -cd "[0-9]"`
 	if [ "${protocol}" = "udp" ];then
-		echo -e "\033[32m\n请选择修改的协议类型:\n\n\033[0m\033[33m\033[01m1、faketcp\n2、wechat-video\033[0m\033[32m\n\n输入序号:\033[0m"
+		echo -e "\033[32m\nPlease select the modified protocol type:\n\n\033[0m\033[33m\033[01m1、faketcp\n2、wechat-video\033[0m\033[32m\n\nEnter the serial number:\033[0m"
     	read pNum
 		if [ -z "${pNum}" ] || [ "${pNum}" == "1" ];then
-			echoColor purple "选择修改协议类型为faketcp."
+			echoColor purple "Select to modify the protocol type to faketcp."
 			editProtocol "udp" "faketcp"
 			delaikoFirewallPort
 			allowPort "tcp" ${port}
 		else
-			echoColor purple "选择修改协议类型为wechat-video."
+			echoColor purple "Choose to modify the protocol type to wechat-video."
 			editProtocol "udp" "wechat-video"
 		fi
 	elif [ "${protocol}" = "faketcp" ];then
 		delaikoFirewallPort
 		allowPort "udp" ${port}
-		echo -e "\033[32m\n请选择修改的协议类型:\n\n\033[0m\033[33m\033[01m1、udp\n2、wechat-video\033[0m\033[32m\n\n输入序号:\033[0m"
+		echo -e "\033[32m\nPlease select the modified protocol type:\n\n\033[0m\033[33m\033[01m1、udp\n2、wechat-video\033[0m\033[32m\n\nEnter the serial number:\033[0m"
     	read pNum
 		if [ -z "${pNum}" ] || [ "${pNum}" == "1" ];then
 			echoColor purple "Select to modify the protocol type to udp."
